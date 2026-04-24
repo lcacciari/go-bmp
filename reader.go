@@ -67,6 +67,7 @@ type decoder struct {
 	r                             io.Reader
 	c                             image.Config
 	bpp                           uint16
+	xppm,yppm                     uint32
 	topDown, rgb565, noAlpha, rle bool
 }
 
@@ -116,6 +117,8 @@ func (d *decoder) DecodeConfig() error {
 		return UnsupportedError("planes " + strconv.FormatUint(uint64(planes), 10))
 	}
 	d.bpp = readUint16(b[28:])
+	d.xppm = readUint32(b[38:])
+	d.yppm = readUint32(b[42:])
 	compression, colors := readUint32(b[30:]), readUint32(b[46:])
 	colorMaskLen := uint32(0)
 	switch {
@@ -203,22 +206,34 @@ func (d *decoder) DecodeConfig() error {
 }
 
 func (d *decoder) Decode() (image.Image, error) {
+	img := BmpImage{
+		Resolution: BmpResolution{
+			YResolution: d.yppm,
+			XResolution: d.xppm,
+		},
+	}
+	var err error
 	if d.rle {
-		return d.decodeRLE()
+		img.Image,err = d.decodeRLE()
+	} else {
+		switch d.bpp {
+		case 1, 2, 4:
+		img.Image,err = d.decodeSmallPaletted()
+		case 8:
+			img.Image,err = d.decodePaletted()
+		case 16:
+			img.Image,err = d.decodeRGB5x5()
+		case 24:
+			img.Image,err = d.decodeRGB()
+		case 32:
+			img.Image,err = d.decodeNRGBA()
+		}
 	}
-	switch d.bpp {
-	case 1, 2, 4:
-		return d.decodeSmallPaletted()
-	case 8:
-		return d.decodePaletted()
-	case 16:
-		return d.decodeRGB5x5()
-	case 24:
-		return d.decodeRGB()
-	case 32:
-		return d.decodeNRGBA()
+	if err != nil {
+		return nil,err
+	} else {
+		return img,nil
 	}
-	panic("unreachable")
 }
 
 // decodeSmallPaletted reads a bpp (< 8) bit-per-pixel BMP image from d.r.

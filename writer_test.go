@@ -27,7 +27,7 @@ func TestEncode(t *testing.T) {
 				t.Fatalf("Decode() = _, %v; want nil", err)
 			}
 			var buf bytes.Buffer
-			if err := Encode(&buf, img); err != nil {
+			if err := Encode(&buf, img,BmpResolution{}); err != nil {
 				t.Fatalf("Encode() = %v; want nil", err)
 			}
 			img2, err := Decode(bytes.NewReader(buf.Bytes()))
@@ -44,7 +44,7 @@ func TestEncode(t *testing.T) {
 						}
 					}
 					buf.Reset()
-					if err = Encode(&buf, gray); err != nil {
+					if err = Encode(&buf, gray,BmpResolution{}); err != nil {
 						t.Fatalf("Encode() = %v; want nil", err)
 					}
 					img2, err = Decode(bytes.NewReader(buf.Bytes()))
@@ -61,7 +61,7 @@ func TestEncode(t *testing.T) {
 						}
 					}
 					buf.Reset()
-					if err = Encode(&buf, gray); err != nil {
+					if err = Encode(&buf, gray,BmpResolution{}); err != nil {
 						t.Fatalf("Encode() = %v; want nil", err)
 					}
 					img2, err = Decode(bytes.NewReader(buf.Bytes()))
@@ -77,7 +77,7 @@ func TestEncode(t *testing.T) {
 					img.Set(0, 0, color.Transparent)
 					img.Set(1, 0, color.RGBA{10, 10, 10, 10})
 					buf.Reset()
-					if err = Encode(&buf, img); err != nil {
+					if err = Encode(&buf, img,BmpResolution{}); err != nil {
 						t.Fatalf("Encode() = %v; want nil", err)
 					}
 					img2, err = Decode(bytes.NewReader(buf.Bytes()))
@@ -91,7 +91,7 @@ func TestEncode(t *testing.T) {
 					img.Set(0, 0, color.Transparent)
 					img.Set(1, 0, color.NRGBA{10, 10, 10, 10})
 					buf.Reset()
-					if err = Encode(&buf, img); err != nil {
+					if err = Encode(&buf, img,BmpResolution{}); err != nil {
 						t.Fatalf("Encode() = %v; want nil", err)
 					}
 					img2, err = Decode(bytes.NewReader(buf.Bytes()))

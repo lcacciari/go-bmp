@@ -20,6 +20,6 @@ func Example() {
 		})
 	}
 	f.Truncate(0)
-	bmp.Encode(f, img)
+	bmp.Encode(f, img,bmp.BmpResolution{})
 	f.Close()
 }
