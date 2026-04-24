@@ -187,7 +187,7 @@ func encode(w io.Writer, m image.Image, step int) error {
 }
 
 // Encode writes the image m to w in BMP format.
-func Encode(w io.Writer, m image.Image,o BmpResolution) error {
+func Encode(w io.Writer, m image.Image,res BmpResolution) error {
 	d := m.Bounds().Size()
 	if d.X < 0 || d.Y < 0 {
 		return FormatError("negative bounds")
@@ -215,8 +215,8 @@ func Encode(w io.Writer, m image.Image,o BmpResolution) error {
 		dibHeaderSize: infoHeaderLen,
 		width:         uint32(d.X),
 		height:        uint32(d.Y),
-		xPixelsPerMeter: uint32(o.HorizonalResolution),
-		yPixelsPerMeter: uint32(o.VerticalResolution),
+		xPixelsPerMeter: uint32(res.XResolution),
+		yPixelsPerMeter: uint32(res.YResolution),
 		colorPlane:    1,
 	}
 	var step int
