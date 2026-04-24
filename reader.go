@@ -493,7 +493,7 @@ func (d *decoder) decodeNRGBA() (image.Image, error) {
 }
 
 // Decode reads a BMP image from r and returns it as an image.Image.
-func Decode(r io.Reader) (image.Image, error) {
+func Decode(r io.Reader) (BmpImage, error) {
 	d := &decoder{r: r}
 	if err := d.DecodeConfig(); err != nil {
 		return nil, err
