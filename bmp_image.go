@@ -1,9 +1,11 @@
 package bmp
 
 import (
+	"fmt"
 	"image"
 	"math"
 )
+
 // BmpImage wraps [image.Image] adding a [BmpResolution] field.
 type BmpImage struct {
 	image.Image
@@ -19,9 +21,13 @@ type BmpResolution struct {
 	YResolution uint32
 }
 
-// FromDpi utility function building a [BmpResolution] data
+func (res BmpResolution) String() string {
+	return fmt.Sprintf("%d/%d",res.XResolution,res.YResolution)
+}
+
+// ResolutionFromDpi utility function building a [BmpResolution] data
 // from a standard dot-per-inch value.
-func FromDpi(dpi int) BmpResolution {
+func ResolutionFromDpi(dpi int) BmpResolution {
 	ppm := uint32(math.Round((float64(dpi) * 1000) / 25.4))
 	return BmpResolution{
 		YResolution: ppm,
